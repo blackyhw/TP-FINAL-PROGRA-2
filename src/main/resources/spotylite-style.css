@@ -1,122 +1,208 @@
+/* Estilos generales */
 .root {
-    -fx-background-color: #121212;
-    -fx-font-family: 'Arial', sans-serif;
+    -fx-background-color: #121212; /* Fondo oscuro */
+    -fx-font-family: 'Arial', sans-serif; /* Fuente */
 }
 
 .label {
-    -fx-text-fill: #FFFFFF;
-}
-
-.button {
-    -fx-background-color: #1DB954;
-    -fx-text-fill: #FFFFFF;
-    -fx-font-weight: bold;
-    -fx-background-radius: 20;
-    -fx-padding: 10 20 10 20;
-}
-
-.button:hover {
-    -fx-background-color: #1ED760;
+    -fx-text-fill: #FFFFFF; /* Texto blanco */
 }
 
 .text-field, .password-field {
-    -fx-background-color: #282828;
-    -fx-text-fill: #FFFFFF;
-    -fx-prompt-text-fill: #B3B3B3;
-    -fx-highlight-fill: #1DB954;
-    -fx-highlight-text-fill: #FFFFFF;
-    -fx-background-radius: 5;
+    -fx-background-color: #282828; /* Fondo de campos de texto */
+    -fx-text-fill: #FFFFFF; /* Texto blanco */
+    -fx-prompt-text-fill: #B3B3B3; /* Texto de sugerencia en gris */
+    -fx-highlight-fill: #1DB954; /* Color de resaltado */
+    -fx-highlight-text-fill: #FFFFFF; /* Color de texto resaltado */
+    -fx-background-radius: 5; /* Esquinas redondeadas */
+}
+
+.button {
+    -fx-background-color: #1DB954; /* Color de fondo del botón */
+    -fx-text-fill: #FFFFFF; /* Texto blanco */
+    -fx-font-weight: bold; /* Texto en negrita */
+    -fx-background-radius: 20; /* Esquinas redondeadas */
+    -fx-padding: 10 20; /* Relleno */
+    -fx-transition: transform 0.2s ease-in-out; /* Transición para el efecto de escala */
+}
+
+.button:hover {
+    -fx-background-color: #1ED760; /* Color de fondo al pasar el mouse */
+    -fx-scale-x: 1.05; /* Aumentar el tamaño en el eje X */
+    -fx-scale-y: 1.05; /* Aumentar el tamaño en el eje Y */
 }
 
 #loginMessage {
-    -fx-font-size: 12px;
+    -fx-font-size: 12px; /* Tamaño de fuente del mensaje de login */
 }
 
 #loginMessage.success {
-    -fx-text-fill: #1DB954;
+    -fx-text-fill: #1DB954; /* Color verde para mensajes de éxito */
 }
 
 #loginMessage.error {
-    -fx-text-fill: #FF5555;
+    -fx-text-fill: #FF5555; /* Color rojo para mensajes de error */
 }
 
 .logo {
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 5); /* Sombra para el logo */
 }
 
-.song-slider, .volume-slider {
-    -fx-background-color: transparent;
+/* Estilos del contenedor */
+.container {
+    -fx-display: box;
+    -fx-orientation: vertical;
+    -fx-height: 100%; /* Ajustar altura al 100% */
 }
 
-.song-slider .track, .volume-slider .track {
-    -fx-background-color: #535353;
+/* Estilos del encabezado */
+header {
+    -fx-background-color: #1DB954; /* Verde Spotify */
+    -fx-padding: 15;
+    -fx-alignment: center;
 }
 
-.song-slider .thumb, .volume-slider .thumb {
-    -fx-background-color: #1DB954;
+/* Navegación */
+nav {
+    -fx-margin-top: 10;
 }
 
-.song-slider:hover .thumb, .volume-slider:hover .thumb {
-    -fx-background-color: #1ED760;
+nav ul {
+    -fx-list-style-type: none;
+    -fx-padding: 0;
 }
 
-.duration-box {
-    -fx-spacing: 10;
-    -fx-padding: 0 10 10 10;
+nav li {
+    -fx-display: inline;
+    -fx-margin: 0 15;
 }
 
-.play-pause-button, .control-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #FFFFFF;
-    -fx-font-size: 16px;
-    -fx-padding: 5;
-}
-
-.play-pause-button:hover, .control-button:hover {
-    -fx-opacity: 0.8;
-}
-
-.song-title {
-    -fx-font-size: 18px;
+nav a {
+    -fx-text-fill: white; /* Enlaces en blanco */
     -fx-font-weight: bold;
 }
 
-.artist-name {
-    -fx-font-size: 14px;
+/* Efecto hover para enlaces en JavaFX */
+nav a:hover {
+    -fx-underline: true; /* Subrayado al pasar el mouse */
+}
+
+/* Estilos de las secciones */
+.section {
+    -fx-opacity: 0; /* Ocultar todas las secciones por defecto */
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+
+.section.active {
+    -fx-opacity: 1; /* Mostrar solo la sección activa */
+}
+
+/* Estilos de las listas de reproducción y likes */
+.playlist-container,
+.like-container {
+    -fx-margin: 20 0;
+}
+
+.playlist,
+.liked-song {
+    -fx-background-color: #282828; /* Fondo oscuro para listas */
+    -fx-padding: 10;
+    -fx-margin: 5 0;
+    -fx-background-radius: 5; /* Esquinas redondeadas */
+}
+
+/* Botones */
+button {
+    -fx-background-color: #1DB954; /* Verde Spotify */
+    -fx-border-color: transparent;
+    -fx-text-fill: white;
+    -fx-padding: 10 20;
+    -fx-font-size: 16px;
+    -fx-background-radius: 5; /* Esquinas redondeadas */
+    -fx-cursor: hand; /* Cambia el cursor al pasar el mouse */
+}
+
+button:hover {
+    -fx-background-color: #1aa34a; /* Verde más oscuro al pasar el mouse */
+}
+
+/* Estilos del pie de página */
+footer {
+    -fx-background-color: #1E1E1E; /* Fondo para el pie de página */
+    -fx-alignment: center;
+    -fx-padding: 10;
+}
+
+/* Estilos del reproductor */
+.player {
+    -fx-display: box;
+    -fx-alignment: center;
+    -fx-justify-content: space-between;
+    -fx-padding: 15;
+    -fx-background-radius: 5; /* Esquinas redondeadas */
+    -fx-margin: 20 0; /* Margen */
 }
 
 .album-cover {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-pref-width: 50; /* Ancho preferido de la carátula del álbum */
+    -fx-pref-height: 50; /* Altura preferida de la carátula del álbum */
+    -fx-background-radius: 5; /* Esquinas redondeadas */
 }
 
-.playlist-label {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
+.song-info {
+    -fx-grow: 1; /* Permite que el contenedor de información de la canción crezca */
+    -fx-margin-left: 15; /* Margen izquierdo */
 }
 
-.playlist-view {
-    -fx-background-color: #282828;
-    -fx-text-fill: #FFFFFF;
+.controls {
+    -fx-display: box;
+    -fx-gap: 10; /* Espaciado entre controles */
 }
 
-.playlist-view .list-cell {
-    -fx-background-color: #282828;
-    -fx-text-fill: #FFFFFF;
+/* Estilos para formularios */
+form {
+    -fx-display: box;
+    -fx-orientation: vertical;
+    -fx-alignment: center;
+    -fx-margin: 20 0; /* Margen */
 }
 
-.playlist-view .list-cell:filled:selected, .playlist-view .list-cell:filled:selected:hover {
-    -fx-background-color: #1DB954;
-    -fx-text-fill: #FFFFFF;
+form input {
+    -fx-margin: 5 0; /* Margen vertical */
+    -fx-padding: 10; /* Relleno */
+    -fx-pref-width: 100%; /* Ancho preferido */
+    -fx-background-radius: 5; /* Esquinas redondeadas */
+    -fx-border-color: #333; /* Color del borde */
 }
 
-.playlist-view .list-cell:filled:hover {
-    -fx-background-color: #3E3E3E;
+form button {
+    -fx-pref-width: 100%; /* Botón de ancho completo */
 }
 
-.volume-slider .track {
-    -fx-background-color: #535353;
+/* Estilos comunes */
+.title {
+    -fx-font-size: 24px; /* Tamaño de fuente del título */
+    -fx-font-weight: bold; /* Fuente en negrita */
 }
 
-.volume-slider .thumb {
-    -fx-background-color: #1DB954;
+.button {
+    -fx-font-size: 14px; /* Aumentar el tamaño de la fuente del botón */
+    -fx-padding: 10 20; /* Aumentar el espaciado dentro del botón */
+    -fx-border-radius: 5; /* Bordes redondeados */
+    -fx-alignment: center; /* Alineación centrada */
+    -fx-pref-width: 200px; /* Aumentar el ancho preferido */
+    -fx-pref-height: 40px; /* Altura preferida */
+}
+
+.label {
+    -fx-font-size: 16px; /* Tamaño de fuente para las etiquetas */
+}
+
+.vbox {
+    -fx-spacing: 10; /* Espacio entre los elementos en VBox */
+}
+
+.hbox {
+    -fx-spacing: 20; /* Espacio entre los elementos en HBox */
 }

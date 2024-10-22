@@ -1,0 +1,72 @@
+@import url("/spotylite-style.css");
+
+/* Tema claro */
+.root {
+    -fx-background-color: #FFFFFF; /* Fondo blanco */
+    -fx-text-fill: #333333; /* Texto gris oscuro */
+}
+
+.player {
+    -fx-background-color: #F5F5F5; /* Fondo ligeramente más oscuro para el reproductor */
+}
+
+form input {
+    -fx-background-color: #FFFFFF; /* Fondo blanco para inputs */
+    -fx-text-fill: #333333; /* Texto gris oscuro */
+    -fx-border-color: #CCCCCC; /* Borde gris claro */
+    -fx-border-radius: 5; /* Bordes redondeados */
+    -fx-padding: 10; /* Espaciado interno */
+}
+
+.button {
+    -fx-background-color: #00796B; /* Verde oscuro */
+    -fx-text-fill: white; /* Texto blanco */
+    -fx-border-color: transparent; /* Sin borde */
+    -fx-border-radius: 5; /* Bordes redondeados */
+    -fx-padding: 10 20; /* Espaciado interno */
+    -fx-pref-width: 120px; /* Ancho preferido mayor */
+    -fx-pref-height: 40px; /* Alto preferido */
+}
+
+.button:hover {
+    -fx-background-color: #004D40; /* Verde más oscuro al pasar el mouse */
+}
+
+.label {
+    -fx-text-fill: #333333; /* Texto gris oscuro */
+    -fx-font-size: 18px; /* Tamaño de fuente */
+    -fx-font-weight: bold; /* Negrita */
+}
+
+.text-field {
+    -fx-background-color: #FFFFFF; /* Fondo blanco para campos de texto */
+    -fx-text-fill: #333333; /* Texto gris oscuro */
+    -fx-border-color: #CCCCCC; /* Borde gris claro */
+    -fx-border-radius: 5; /* Bordes redondeados */
+    -fx-padding: 10; /* Espaciado interno */
+}
+
+.text-field:focused {
+    -fx-border-color: #00796B; /* Color del borde al tener el foco */
+    -fx-background-color: #F5F5F5; /* Fondo más claro al hacer foco */
+}
+
+/* Estilos específicos para el botón de cambiar tema */
+.button-theme {
+    -fx-background-color: transparent; /* Fondo transparente */
+    -fx-text-fill: #333333; /* Texto gris oscuro */
+    -fx-font-size: 20px; /* Tamaño del ícono */
+}
+
+/* Estilos para HBox */
+.hbox {
+    -fx-spacing: 15; /* Espaciado entre botones */
+    -fx-alignment: center; /* Alineación al centro */
+    -fx-padding: 10; /* Espaciado interno en HBox */
+    -fx-background-color: transparent; /* Fondo transparente para HBox */
+}
+
+/* General styles */
+.scroll-pane {
+    -fx-background-color: transparent; /* Fondo transparente para scroll panes */
+}

@@ -1,39 +1,24 @@
 package org.spoty.lite.gui;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.FadeTransition;
+import javafx.animation.SequentialTransition;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.spoty.lite.controller.MusicPlayerController;
-import org.spoty.lite.model.Song;
 
 import java.util.Objects;
 
 public class MusicPlayerGUI extends Application {
     private static MusicPlayerGUI instance;
-    private Slider songSlider;
-    private Label songPositionLabel;
-    private Label totalDurationLabel;
-    private MusicPlayerController musicPlayerController;
-    private Timeline timeline;
-    private Button playPauseButton;
-    private ImageView playImageView;
-    private ImageView pauseImageView;
-    private ListView<String> playlistView;
-    private ImageView albumCoverView;
-    private Slider volumeSlider;
-    private ToggleButton repeatShuffleButton;
+    private StackPane mainContent;
+    private BorderPane root;
+    private boolean isDarkTheme = true;
 
     public MusicPlayerGUI() {
         instance = this;
@@ -44,190 +29,237 @@ public class MusicPlayerGUI extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         stage.setTitle("SpotyLite 2.0");
-        stage.setWidth(400);
-        stage.setHeight(600);
+        stage.setWidth(700);
+        stage.setHeight(700);
         stage.setResizable(false);
 
-        BorderPane root = new BorderPane();
+        root = new BorderPane();
         root.getStyleClass().add("root");
 
-        // Top section: Album cover and song info
-        VBox topSection = createTopSection();
-        root.setTop(topSection);
+        // Header
+        VBox header = createHeader();
+        root.setTop(header);
 
-        // Center section: Playlist
-        VBox centerSection = createCenterSection();
-        root.setCenter(centerSection);
-
-        // Bottom section: Player controls
-        VBox bottomSection = createBottomSection();
-        root.setBottom(bottomSection);
-
-        musicPlayerController = new MusicPlayerController();
-        Song song = new Song("Test Song", "Test Artist", "src/main/resources/test.mp3");
-        musicPlayerController.initialize(song);
-        totalDurationLabel.setText(formatTime(musicPlayerController.getSongDuration()));
-        songSlider.setMax(musicPlayerController.getSongDuration());
+        // Main Content
+        mainContent = createMainContent();
+        root.setCenter(mainContent);
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/spotylite-style.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/dark-theme.css")).toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
 
-    private VBox createTopSection() {
-        VBox topSection = new VBox(10);
-        topSection.setAlignment(Pos.CENTER);
-        topSection.setPadding(new Insets(20));
-/*
-        albumCoverView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/default-album-art.png"))));
-        albumCoverView.setFitHeight(200);
-        albumCoverView.setFitWidth(200);
-        albumCoverView.getStyleClass().add("album-cover");
-*/
-        Label songTitle = new Label("Test Song");
-        songTitle.getStyleClass().add("song-title");
-        Label artistName = new Label("Test Artist");
-        artistName.getStyleClass().add("artist-name");
+    private VBox createHeader() {
+        // Crear el botón para cambiar de tema con un ícono
+        Button toggleThemeButton = new Button();
+        updateThemeIcon(toggleThemeButton); // Establecer el ícono inicial
+        toggleThemeButton.setOnAction(e -> {
+            toggleTheme();
+            updateThemeIcon(toggleThemeButton); // Actualizar el ícono después de cambiar el tema
+        });
 
-        topSection.getChildren().addAll( songTitle, artistName);
-        return topSection;
-    }
-
-    private VBox createCenterSection() {
-        VBox centerSection = new VBox(10);
-        centerSection.setPadding(new Insets(0, 20, 20, 20));
-
-        Label playlistLabel = new Label("Playlist");
-        playlistLabel.getStyleClass().add("playlist-label");
-
-        playlistView = new ListView<>();
-        playlistView.getStyleClass().add("playlist-view");
-        ObservableList<String> items = FXCollections.observableArrayList(
-                "Song 1", "Song 2", "Song 3", "Song 4", "Song 5"
+        // Crear el contenedor de navegación (HBox)
+        HBox nav = new HBox(20);
+        nav.setAlignment(Pos.CENTER);
+        nav.getChildren().addAll(
+                createNavLink("Inicio", "home"),
+                createNavLink("Playlists", "playlists"),
+                createNavLink("Mis Likes", "likes"),
+                createNavLink("Cuenta", "user"),
+                toggleThemeButton // Agregar el botón al contenedor de navegación
         );
-        playlistView.setItems(items);
 
-        centerSection.getChildren().addAll(playlistLabel, playlistView);
-        return centerSection;
+        // Crear el contenedor principal del encabezado (VBox)
+        VBox header = new VBox();
+        header.setPadding(new Insets(10));
+        header.setAlignment(Pos.CENTER);
+
+        Label title = new Label(); // Crear el título
+        title.getStyleClass().add("title"); // Asegúrate de que "title" esté definido en el CSS
+
+        header.getChildren().addAll(title, nav); // Agregar el título y la navegación al encabezado
+        return header; // Retornar el encabezado
     }
 
-    private VBox createBottomSection() {
-        VBox bottomSection = new VBox(10);
-        bottomSection.setAlignment(Pos.CENTER);
-        bottomSection.setPadding(new Insets(20));
-
-        songSlider = new Slider(0, 100, 0);
-        songSlider.getStyleClass().add("song-slider");
-        songSlider.setPrefWidth(350);
-        songSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (songSlider.isValueChanging()) {
-                musicPlayerController.seek(newValue.longValue());
-            }
-        });
-
-        songPositionLabel = new Label("0:00");
-        totalDurationLabel = new Label("0:00");
-
-        HBox durationBox = new HBox(songPositionLabel, new Region(), totalDurationLabel);
-        durationBox.getStyleClass().add("duration-box");
-        HBox.setHgrow(durationBox.getChildren().get(1), Priority.ALWAYS);
-
-        HBox controlBox = createControlBox();
-
-        volumeSlider = new Slider(0, 100, 50);
-        volumeSlider.getStyleClass().add("volume-slider");
-        volumeSlider.setPrefWidth(100);
-        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (musicPlayerController != null) {
-                musicPlayerController.setVolume(newValue.doubleValue() / 100);
-            }
-        });
-
-        HBox volumeBox = new HBox(10, new Label("Volume:"), volumeSlider);
-        volumeBox.setAlignment(Pos.CENTER);
-
-        bottomSection.getChildren().addAll(songSlider, durationBox, controlBox, volumeBox);
-        return bottomSection;
-    }
-
-    private HBox createControlBox() {
-        playImageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/play.png"))));
-        pauseImageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pause.png"))));
-        playImageView.setFitHeight(30);
-        playImageView.setFitWidth(30);
-        pauseImageView.setFitHeight(30);
-        pauseImageView.setFitWidth(30);
-
-        playPauseButton = new Button();
-        playPauseButton.setGraphic(playImageView);
-        playPauseButton.getStyleClass().add("play-pause-button");
-        playPauseButton.setOnAction(event -> togglePlayPause());
-
-        Button prevButton = new Button("⏮");
-        prevButton.getStyleClass().add("control-button");
-        prevButton.setOnAction(event -> musicPlayerController.previousTrack());
-
-        Button nextButton = new Button("⏭");
-        nextButton.getStyleClass().add("control-button");
-        nextButton.setOnAction(event -> musicPlayerController.nextTrack());
-
-        repeatShuffleButton = new ToggleButton("🔁");
-        repeatShuffleButton.getStyleClass().add("control-button");
-        repeatShuffleButton.setOnAction(event -> toggleRepeatShuffle());
-
-        HBox controlBox = new HBox(20, prevButton, playPauseButton, nextButton, repeatShuffleButton);
-        controlBox.setAlignment(Pos.CENTER);
-        return controlBox;
-    }
-
-    private void togglePlayPause() {
-        if (musicPlayerController != null) {
-            if (musicPlayerController.isPlaying()) {
-                musicPlayerController.pause();
-                playPauseButton.setGraphic(playImageView);
-            } else {
-                musicPlayerController.play();
-                playPauseButton.setGraphic(pauseImageView);
-            }
-        }
-    }
-
-    private void toggleRepeatShuffle() {
-        if (repeatShuffleButton.isSelected()) {
-            repeatShuffleButton.setText("🔀");
-            // Implementar lógica para modo aleatorio
+    private void updateThemeIcon(Button button) {
+        if (isDarkTheme) {
+            button.setText("🌙"); // Icon for dark theme
+            button.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-family: 'Segoe UI Symbol', 'Arial', sans-serif; -fx-font-size: 20px; -fx-border-color: transparent;");
         } else {
-            repeatShuffleButton.setText("🔁");
-            // Implementar lógica para modo repetir
+            button.setText("☀"); // Icon for light theme
+            button.setStyle("-fx-background-color: transparent; -fx-text-fill: black; -fx-font-family: 'Segoe UI Symbol', 'Arial', sans-serif; -fx-font-size: 20px; -fx-border-color: transparent;");
         }
     }
 
-    public void startSliderUpdate() {
-        timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            long currentPosition = musicPlayerController.getCurrentPosition();
-            songSlider.setValue(currentPosition);
-            songPositionLabel.setText(formatTime(currentPosition));
-        }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+    private void toggleTheme() {
+        isDarkTheme = !isDarkTheme; // Toggle the theme state
+        Scene scene = mainContent.getScene(); // Get the current scene
+        scene.getStylesheets().clear(); // Clear previous styles
+        String theme = isDarkTheme ? "/dark-theme.css" : "/light-theme.css";
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm()); // Add the new style
+
+        root.getStyleClass().clear(); // Clear style classes
+        root.getStyleClass().add(isDarkTheme ? "root" : "root"); // Add the appropriate class
     }
 
-    public void stopSliderUpdate() {
-        if (timeline != null) {
-            timeline.stop();
+
+    private Button createNavLink(String text, String sectionId) {
+        Button button = new Button(text);
+        button.getStyleClass().add("button"); // Add the button class
+        button.setOnAction(e -> showSection(sectionId));
+        return button;
+    }
+
+    private StackPane createMainContent() {
+        StackPane mainContent = new StackPane();
+        Node homeSection = createHomeSection();
+        Node playlistsSection = createPlaylistsSection();
+        Node likesSection = createLikesSection();
+        Node userSection = createUserSection();
+
+        // Agregar secciones al StackPane
+        mainContent.getChildren().addAll(homeSection, playlistsSection, likesSection, userSection);
+
+        // Mostrar solo la sección de inicio al principio
+        homeSection.setVisible(true);
+        playlistsSection.setVisible(false);
+        likesSection.setVisible(false);
+        userSection.setVisible(false);
+
+        return mainContent;
+    }
+
+    private void showSection(String sectionId) {
+        // Variable para almacenar la sección activa
+        Node activeSection = null;
+
+        // Determina cuál es la sección activa
+        switch (sectionId) {
+            case "home":
+                activeSection = mainContent.getChildren().get(0); // Home
+                break;
+            case "playlists":
+                activeSection = mainContent.getChildren().get(1); // Playlists
+                break;
+            case "likes":
+                activeSection = mainContent.getChildren().get(2); // Likes
+                break;
+            case "user":
+                activeSection = mainContent.getChildren().get(3); // User
+                break;
+        }
+
+        // Asegúrate de que la sección activa esté visible
+        if (activeSection != null) {
+            // Primero, ocultamos todas las secciones
+            SequentialTransition transition = new SequentialTransition();
+
+            for (Node section : mainContent.getChildren()) {
+                if (section != activeSection) {
+                    // Animación de desvanecimiento para ocultar secciones
+                    FadeTransition fadeOut = new FadeTransition(Duration.millis(150), section);
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+                    fadeOut.setOnFinished(e -> section.setVisible(false)); // Oculta la sección después de la animación
+                    transition.getChildren().add(fadeOut); // Agrega a la secuencia
+                }
+            }
+
+            // Cuando todas las secciones están ocultas, mostramos la sección activa
+            Node finalActiveSection = activeSection;
+            transition.setOnFinished(e -> {
+                finalActiveSection.setVisible(true); // Muestra la sección activa
+                finalActiveSection.setOpacity(0); // Asegúrate de que la sección esté oculta antes de animar
+                // Animación de desvanecimiento para mostrar la sección activa
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(300), finalActiveSection);
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play(); // Reproduce la animación de desvanecimiento
+            });
+
+            transition.play(); // Reproduce la secuencia de animaciones
         }
     }
+    private void filterSongs(String query) {
+        // Lógica para filtrar canciones según la consulta
+        // Puedes implementar la lógica para mostrar solo las canciones que coincidan con la búsqueda
+        // Esto puede incluir actualizar la interfaz para mostrar solo las canciones que coinciden
+        System.out.println("Filtrar canciones por: " + query);
+    }
 
-    private String formatTime(double seconds) {
-        int minutes = (int) seconds / 60;
-        int secs = (int) seconds % 60;
-        return String.format("%d:%02d", minutes, secs);
+    private VBox createHomeSection() {
+        VBox home = new VBox(20);
+        home.setAlignment(Pos.CENTER);
+        home.setPadding(new Insets(20));
+
+        // Crear la barra de búsqueda
+        TextField searchField = new TextField();
+        searchField.setPromptText("Buscar Canciones...");
+        searchField.getStyleClass().add("text-field"); // Añadir la clase de estilo
+        searchField.setOnKeyReleased(e -> filterSongs(searchField.getText())); // Llama al método de filtrado al escribir
+
+        home.getChildren().add(searchField); // Agregar la barra de búsqueda
+        home.getChildren().add(new Label("Bienvenido a SpotyLite"));
+        home.getChildren().add(new Label("Tu música, tu estilo."));
+        return home;
+    }
+
+    private VBox createPlaylistsSection() {
+        VBox playlists = new VBox(10);
+        playlists.setPadding(new Insets(20));
+        playlists.getChildren().add(new Label("Playlists Personalizadas"));
+
+        // Aquí puedes agregar la lógica para mostrar las playlists
+        playlists.getChildren().addAll(new Label("Playlist 1"), new Label("Playlist 2"), new Label("Playlist 3"));
+        Button createPlaylistButton = new Button("Crear Nueva Playlist");
+        playlists.getChildren().add(createPlaylistButton);
+        return playlists;
+    }
+
+    private VBox createLikesSection() {
+        VBox likes = new VBox(10);
+        likes.setPadding(new Insets(20));
+
+        // Crear la barra de búsqueda
+        TextField searchField = new TextField();
+        searchField.setPromptText("Buscar Canciones Favoritas...");
+        searchField.getStyleClass().add("text-field"); // Añadir la clase de estilo
+        searchField.setOnKeyReleased(e -> filterSongs(searchField.getText())); // Llama al método de filtrado al escribir
+
+        likes.getChildren().add(searchField); // Agregar la barra de búsqueda
+        likes.getChildren().add(new Label("Mis Likes"));
+        likes.getChildren().addAll(new Label("Canción Favorita 1"), new Label("Canción Favorita 2"), new Label("Canción Favorita 3"));
+        return likes;
+    }
+
+    private VBox createUserSection() {
+        VBox user = new VBox(10);
+        user.setPadding(new Insets(20));
+        user.getChildren().add(new Label("Datos de Usuario"));
+
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Nombre de Usuario");
+        TextField emailField = new TextField();
+        emailField.setPromptText("Email");
+
+        Button updateButton = new Button("Actualizar Datos");
+
+        user.getChildren().addAll(usernameField, emailField, updateButton);
+        return user;
     }
 
     public static void main(String[] args) {
         launch(args);
     }
+
+    public void stopSliderUpdate() {
+    }
+
+    public void startSliderUpdate() {
+    }
+
+
 }

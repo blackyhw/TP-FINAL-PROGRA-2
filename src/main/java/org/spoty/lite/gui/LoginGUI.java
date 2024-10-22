@@ -90,7 +90,7 @@ public class LoginGUI extends Application {
             try {
                 musicPlayerGUI.start(new Stage());
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
             ((Stage) userTextField.getScene().getWindow()).close();
             // Aquí iría el código para abrir la ventana principal de la aplicación
