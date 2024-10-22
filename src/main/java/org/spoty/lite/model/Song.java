@@ -1,4 +1,4 @@
-package org.SpotyLite.model;
+package org.spoty.lite.model;
 
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.InvalidDataException;

@@ -1,4 +1,4 @@
-package org.SpotyLite.controller;
+package org.spoty.lite.controller;
 
 public class LoginController {
 

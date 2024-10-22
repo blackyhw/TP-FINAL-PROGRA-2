@@ -1,11 +1,11 @@
-package org.SpotyLite.controller;
+package org.spoty.lite.controller;
 
-import org.SpotyLite.gui.MusicPlayerGUI;
+import org.spoty.lite.gui.MusicPlayerGUI;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
-import org.SpotyLite.model.Song;
+import org.spoty.lite.model.Song;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -86,5 +86,15 @@ public class MusicPlayerController {
 
     public boolean isPlaying() {
         return isPlaying;
+    }
+
+
+    public void setVolume(double v) {
+    }
+
+    public void previousTrack() {
+    }
+
+    public void nextTrack() {
     }
 }
