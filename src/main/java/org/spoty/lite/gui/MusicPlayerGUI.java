@@ -53,15 +53,14 @@ public class MusicPlayerGUI extends Application {
     }
 
     private VBox createHeader() {
-        // Crear el botón para cambiar de tema con un ícono
+
         Button toggleThemeButton = new Button();
-        updateThemeIcon(toggleThemeButton); // Establecer el ícono inicial
+        updateThemeIcon(toggleThemeButton);
         toggleThemeButton.setOnAction(e -> {
             toggleTheme();
-            updateThemeIcon(toggleThemeButton); // Actualizar el ícono después de cambiar el tema
+            updateThemeIcon(toggleThemeButton);
         });
 
-        // Crear el contenedor de navegación (HBox)
         HBox nav = new HBox(20);
         nav.setAlignment(Pos.CENTER);
         nav.getChildren().addAll(
@@ -69,19 +68,18 @@ public class MusicPlayerGUI extends Application {
                 createNavLink("Playlists", "playlists"),
                 createNavLink("Mis Likes", "likes"),
                 createNavLink("Cuenta", "user"),
-                toggleThemeButton // Agregar el botón al contenedor de navegación
+                toggleThemeButton
         );
 
-        // Crear el contenedor principal del encabezado (VBox)
         VBox header = new VBox();
         header.setPadding(new Insets(10));
         header.setAlignment(Pos.CENTER);
 
-        Label title = new Label(); // Crear el título
-        title.getStyleClass().add("title"); // Asegúrate de que "title" esté definido en el CSS
+        Label title = new Label();
+        title.getStyleClass().add("title");
 
-        header.getChildren().addAll(title, nav); // Agregar el título y la navegación al encabezado
-        return header; // Retornar el encabezado
+        header.getChildren().addAll(title, nav);
+        return header;
     }
 
     private void updateThemeIcon(Button button) {
@@ -95,20 +93,20 @@ public class MusicPlayerGUI extends Application {
     }
 
     private void toggleTheme() {
-        isDarkTheme = !isDarkTheme; // Toggle the theme state
-        Scene scene = mainContent.getScene(); // Get the current scene
-        scene.getStylesheets().clear(); // Clear previous styles
+        isDarkTheme = !isDarkTheme;
+        Scene scene = mainContent.getScene();
+        scene.getStylesheets().clear();
         String theme = isDarkTheme ? "/dark-theme.css" : "/light-theme.css";
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm()); // Add the new style
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
 
-        root.getStyleClass().clear(); // Clear style classes
-        root.getStyleClass().add(isDarkTheme ? "root" : "root"); // Add the appropriate class
+        root.getStyleClass().clear();
+        root.getStyleClass().add(isDarkTheme ? "root" : "root");
     }
 
 
     private Button createNavLink(String text, String sectionId) {
         Button button = new Button(text);
-        button.getStyleClass().add("button"); // Add the button class
+        button.getStyleClass().add("button");
         button.setOnAction(e -> showSection(sectionId));
         return button;
     }
@@ -120,10 +118,8 @@ public class MusicPlayerGUI extends Application {
         Node likesSection = createLikesSection();
         Node userSection = createUserSection();
 
-        // Agregar secciones al StackPane
         mainContent.getChildren().addAll(homeSection, playlistsSection, likesSection, userSection);
 
-        // Mostrar solo la sección de inicio al principio
         homeSection.setVisible(true);
         playlistsSection.setVisible(false);
         likesSection.setVisible(false);
@@ -133,60 +129,51 @@ public class MusicPlayerGUI extends Application {
     }
 
     private void showSection(String sectionId) {
-        // Variable para almacenar la sección activa
         Node activeSection = null;
 
-        // Determina cuál es la sección activa
         switch (sectionId) {
             case "home":
-                activeSection = mainContent.getChildren().get(0); // Home
+                activeSection = mainContent.getChildren().get(0);
                 break;
             case "playlists":
-                activeSection = mainContent.getChildren().get(1); // Playlists
+                activeSection = mainContent.getChildren().get(1);
                 break;
             case "likes":
-                activeSection = mainContent.getChildren().get(2); // Likes
+                activeSection = mainContent.getChildren().get(2);
                 break;
             case "user":
-                activeSection = mainContent.getChildren().get(3); // User
+                activeSection = mainContent.getChildren().get(3);
                 break;
         }
 
-        // Asegúrate de que la sección activa esté visible
         if (activeSection != null) {
-            // Primero, ocultamos todas las secciones
             SequentialTransition transition = new SequentialTransition();
 
             for (Node section : mainContent.getChildren()) {
                 if (section != activeSection) {
-                    // Animación de desvanecimiento para ocultar secciones
                     FadeTransition fadeOut = new FadeTransition(Duration.millis(150), section);
                     fadeOut.setFromValue(1.0);
                     fadeOut.setToValue(0.0);
-                    fadeOut.setOnFinished(e -> section.setVisible(false)); // Oculta la sección después de la animación
-                    transition.getChildren().add(fadeOut); // Agrega a la secuencia
+                    fadeOut.setOnFinished(e -> section.setVisible(false));
+                    transition.getChildren().add(fadeOut);
                 }
             }
 
-            // Cuando todas las secciones están ocultas, mostramos la sección activa
             Node finalActiveSection = activeSection;
             transition.setOnFinished(e -> {
-                finalActiveSection.setVisible(true); // Muestra la sección activa
-                finalActiveSection.setOpacity(0); // Asegúrate de que la sección esté oculta antes de animar
-                // Animación de desvanecimiento para mostrar la sección activa
+                finalActiveSection.setVisible(true);
+                finalActiveSection.setOpacity(0);
                 FadeTransition fadeIn = new FadeTransition(Duration.millis(300), finalActiveSection);
                 fadeIn.setFromValue(0.0);
                 fadeIn.setToValue(1.0);
-                fadeIn.play(); // Reproduce la animación de desvanecimiento
+                fadeIn.play();
             });
 
-            transition.play(); // Reproduce la secuencia de animaciones
+            transition.play();
         }
     }
     private void filterSongs(String query) {
         // Lógica para filtrar canciones según la consulta
-        // Puedes implementar la lógica para mostrar solo las canciones que coincidan con la búsqueda
-        // Esto puede incluir actualizar la interfaz para mostrar solo las canciones que coinciden
         System.out.println("Filtrar canciones por: " + query);
     }
 
@@ -195,13 +182,12 @@ public class MusicPlayerGUI extends Application {
         home.setAlignment(Pos.CENTER);
         home.setPadding(new Insets(20));
 
-        // Crear la barra de búsqueda
         TextField searchField = new TextField();
         searchField.setPromptText("Buscar Canciones...");
-        searchField.getStyleClass().add("text-field"); // Añadir la clase de estilo
-        searchField.setOnKeyReleased(e -> filterSongs(searchField.getText())); // Llama al método de filtrado al escribir
+        searchField.getStyleClass().add("text-field");
+        searchField.setOnKeyReleased(e -> filterSongs(searchField.getText()));
 
-        home.getChildren().add(searchField); // Agregar la barra de búsqueda
+        home.getChildren().add(searchField);
         home.getChildren().add(new Label("Bienvenido a SpotyLite"));
         home.getChildren().add(new Label("Tu música, tu estilo."));
         return home;
@@ -212,7 +198,6 @@ public class MusicPlayerGUI extends Application {
         playlists.setPadding(new Insets(20));
         playlists.getChildren().add(new Label("Playlists Personalizadas"));
 
-        // Aquí puedes agregar la lógica para mostrar las playlists
         playlists.getChildren().addAll(new Label("Playlist 1"), new Label("Playlist 2"), new Label("Playlist 3"));
         Button createPlaylistButton = new Button("Crear Nueva Playlist");
         playlists.getChildren().add(createPlaylistButton);
@@ -223,13 +208,12 @@ public class MusicPlayerGUI extends Application {
         VBox likes = new VBox(10);
         likes.setPadding(new Insets(20));
 
-        // Crear la barra de búsqueda
         TextField searchField = new TextField();
         searchField.setPromptText("Buscar Canciones Favoritas...");
-        searchField.getStyleClass().add("text-field"); // Añadir la clase de estilo
-        searchField.setOnKeyReleased(e -> filterSongs(searchField.getText())); // Llama al método de filtrado al escribir
+        searchField.getStyleClass().add("text-field");
+        searchField.setOnKeyReleased(e -> filterSongs(searchField.getText()));
 
-        likes.getChildren().add(searchField); // Agregar la barra de búsqueda
+        likes.getChildren().add(searchField);
         likes.getChildren().add(new Label("Mis Likes"));
         likes.getChildren().addAll(new Label("Canción Favorita 1"), new Label("Canción Favorita 2"), new Label("Canción Favorita 3"));
         return likes;

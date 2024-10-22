@@ -7,7 +7,7 @@
 }
 
 .player {
-    -fx-background-color: #F5F5F5; /* Fondo ligeramente más oscuro para el reproductor */
+    -fx-background-color: #F5F5F5; /* Fondo más oscuro para el reproductor */
 }
 
 form input {
