@@ -1,208 +1,193 @@
 /* Estilos generales */
 .root {
-    -fx-background-color: #121212; /* Fondo oscuro */
-    -fx-font-family: 'Arial', sans-serif; /* Fuente */
+    -fx-background-color: #121212;
+    -fx-font-family: 'Arial', sans-serif;
 }
 
 .label {
-    -fx-text-fill: #FFFFFF; /* Texto blanco */
-}
-
-.text-field, .password-field {
-    -fx-background-color: #282828; /* Fondo de campos de texto */
-    -fx-text-fill: #FFFFFF; /* Texto blanco */
-    -fx-prompt-text-fill: #B3B3B3; /* Texto de sugerencia en gris */
-    -fx-highlight-fill: #1DB954; /* Color de resaltado */
-    -fx-highlight-text-fill: #FFFFFF; /* Color de texto resaltado */
-    -fx-background-radius: 5; /* Esquinas redondeadas */
+    -fx-text-fill: #FFFFFF;
 }
 
 .button {
-    -fx-background-color: #1DB954; /* Color de fondo del botón */
-    -fx-text-fill: #FFFFFF; /* Texto blanco */
-    -fx-font-weight: bold; /* Texto en negrita */
-    -fx-background-radius: 20; /* Esquinas redondeadas */
-    -fx-padding: 10 20; /* Relleno */
-    -fx-transition: transform 0.2s ease-in-out; /* Transición para el efecto de escala */
+    -fx-background-color: #1DB954;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 10 20;
 }
 
 .button:hover {
-    -fx-background-color: #1ED760; /* Color de fondo al pasar el mouse */
-    -fx-scale-x: 1.05; /* Aumentar el tamaño en el eje X */
-    -fx-scale-y: 1.05; /* Aumentar el tamaño en el eje Y */
+    -fx-background-color: #1ED760;
 }
 
-#loginMessage {
-    -fx-font-size: 12px; /* Tamaño de fuente del mensaje de login */
+.text-field, .password-field {
+    -fx-background-color: #282828;
+    -fx-text-fill: #FFFFFF;
+    -fx-prompt-text-fill: #B3B3B3;
+    -fx-highlight-fill: #1DB954;
+    -fx-highlight-text-fill: #FFFFFF;
+    -fx-background-radius: 5;
 }
 
-#loginMessage.success {
-    -fx-text-fill: #1DB954; /* Color verde para mensajes de éxito */
+.search-bar {
+    -fx-pref-width: 250px;
+    -fx-background-radius: 15;
+    -fx-padding: 5 10;
 }
 
-#loginMessage.error {
-    -fx-text-fill: #FF5555; /* Color rojo para mensajes de error */
+.nav-button {
+    -fx-background-color: #1DB954;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-border-color: transparent;
+    -fx-background-radius: 20;
+    -fx-min-width: 100px;
 }
 
-.logo {
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 5); /* Sombra para el logo */
+.nav-button:hover {
+    -fx-background-color: #1ED760;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
-/* Estilos del contenedor */
-.container {
-    -fx-display: box;
-    -fx-orientation: vertical;
-    -fx-height: 100%; /* Ajustar altura al 100% */
-}
-
-/* Estilos del encabezado */
-header {
-    -fx-background-color: #1DB954; /* Verde */
-    -fx-padding: 15;
-    -fx-alignment: center;
-}
-
-/* Navegación */
-nav {
-    -fx-margin-top: 10;
-}
-
-nav ul {
-    -fx-list-style-type: none;
-    -fx-padding: 0;
-}
-
-nav li {
-    -fx-display: inline;
-    -fx-margin: 0 15;
-}
-
-nav a {
-    -fx-text-fill: white; /* Enlaces en blanco */
+.title {
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
 }
 
-/* Efecto hover para enlaces en JavaFX */
-nav a:hover {
-    -fx-underline: true; /* Subrayado al pasar el mouse */
+.player-controls {
+    -fx-background-color: #282828;
+    -fx-padding: 1px; /* Reduce el padding para disminuir la altura */
+    -fx-spacing: 1px; /* Reduce el spacing para disminuir la altura */
+    -fx-alignment: center;
 }
 
-/* Estilos de las secciones */
+.song-slider .track {
+    -fx-background-color: #535353;
+}
+
+.song-slider .thumb {
+    -fx-background-color: #1DB954;
+}
+
+.time-labels {
+    -fx-text-fill: #B3B3B3;
+    -fx-font-size: 12px;
+    -fx-spacing: 1px; /* Reduce el spacing para disminuir la altura */
+}
+
+.control-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 16px;
+    -fx-padding: 5;
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+}
+
+.control-button:selected {
+    -fx-text-fill: #1DB954;
+}
+
+.volume-slider {
+    -fx-orientation: horizontal;
+    -fx-pref-width: 100px;
+}
+
+.volume-slider .track {
+    -fx-background-color: #535353;
+}
+
+.volume-slider .thumb {
+    -fx-background-color: #1DB954;
+}
+
+.toggle-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #B3B3B3;
+}
+
+.toggle-button:selected {
+    -fx-text-fill: #1DB954;
+}
+
+/* Estilos adicionales */
+.playlist-container,
+.like-container {
+    -fx-background-color: #282828;
+    -fx-padding: 10;
+    -fx-background-radius: 5;
+}
+
 .section {
-    -fx-opacity: 0; /* Ocultar todas las secciones por defecto */
     -fx-padding: 20;
     -fx-alignment: center;
 }
 
-.section.active {
-    -fx-opacity: 1; /* Mostrar solo la sección activa */
-}
-
-/* Estilos de las listas de reproducción y likes */
-.playlist-container,
-.like-container {
-    -fx-margin: 20 0;
-}
-
-.playlist,
-.liked-song {
-    -fx-background-color: #282828; /* Fondo oscuro para listas */
-    -fx-padding: 10;
-    -fx-margin: 5 0;
-    -fx-background-radius: 5; /* Esquinas redondeadas */
-}
-
-/* Botones */
-button {
-    -fx-background-color: #1DB954; /* Verde Spotify */
-    -fx-border-color: transparent;
-    -fx-text-fill: white;
-    -fx-padding: 10 20;
-    -fx-font-size: 16px;
-    -fx-background-radius: 5; /* Esquinas redondeadas */
-    -fx-cursor: hand; /* Cambia el cursor al pasar el mouse */
-}
-
-button:hover {
-    -fx-background-color: #1aa34a; /* Verde más oscuro al pasar el mouse */
-}
-
-/* Estilos del pie de página */
-footer {
-    -fx-background-color: #1E1E1E; /* Fondo para el pie de página */
+form {
+    -fx-spacing: 10;
     -fx-alignment: center;
-    -fx-padding: 10;
 }
 
-/* Estilos del reproductor */
-.player {
-    -fx-display: box;
-    -fx-alignment: center;
-    -fx-justify-content: space-between;
-    -fx-padding: 15;
-    -fx-background-radius: 5; /* Esquinas redondeadas */
-    -fx-margin: 20 0; /* Margen */
+form .text-field {
+    -fx-max-width: 300px;
+}
+
+form .button {
+    -fx-max-width: 200px;
+}
+
+.search-field {
+    -fx-background-color: #282828;
+    -fx-text-fill: #FFFFFF;
+    -fx-prompt-text-fill: #B3B3B3;
+    -fx-background-radius: 15;
+    -fx-padding: 5 10;
+    -fx-pref-width: 200px;
 }
 
 .album-cover {
-    -fx-pref-width: 50; /* Ancho preferido de la carátula del álbum */
-    -fx-pref-height: 50; /* Altura preferida de la carátula del álbum */
-    -fx-background-radius: 5; /* Esquinas redondeadas */
+    -fx-pref-width: 50;
+    -fx-pref-height: 50;
+    -fx-background-radius: 5;
 }
 
 .song-info {
-    -fx-grow: 1; /* Permite que el contenedor de información de la canción crezca */
-    -fx-margin-left: 15; /* Margen izquierdo */
+    -fx-grow: 1;
+    -fx-margin-left: 15;
 }
 
 .controls {
     -fx-display: box;
-    -fx-gap: 10; /* Espaciado entre controles */
+    -fx-gap: 10;
 }
 
-/* Estilos para formularios */
 form {
     -fx-display: box;
     -fx-orientation: vertical;
     -fx-alignment: center;
-    -fx-margin: 20 0; /* Margen */
+    -fx-margin: 20 0;
 }
 
 form input {
-    -fx-margin: 5 0; /* Margen vertical */
-    -fx-padding: 10; /* Relleno */
-    -fx-pref-width: 100%; /* Ancho preferido */
-    -fx-background-radius: 5; /* Esquinas redondeadas */
-    -fx-border-color: #333; /* Color del borde */
+    -fx-margin: 5 0;
+    -fx-padding: 10;
+    -fx-pref-width: 100%;
+    -fx-background-radius: 5;
+    -fx-border-color: #333;
 }
 
 form button {
-    -fx-pref-width: 100%; /* Botón de ancho completo */
-}
-
-/* Estilos comunes */
-.title {
-    -fx-font-size: 24px; /* Tamaño de fuente del título */
-    -fx-font-weight: bold; /* Fuente en negrita */
-}
-
-.button {
-    -fx-font-size: 14px; /* Aumentar el tamaño de la fuente del botón */
-    -fx-padding: 10 20; /* Aumentar el espaciado dentro del botón */
-    -fx-border-radius: 5; /* Bordes redondeados */
-    -fx-alignment: center; /* Alineación centrada */
-    -fx-pref-width: 200px; /* Aumentar el ancho preferido */
-    -fx-pref-height: 40px; /* Altura preferida */
-}
-
-.label {
-    -fx-font-size: 16px; /* Tamaño de fuente para las etiquetas */
+    -fx-pref-width: 100%;
 }
 
 .vbox {
-    -fx-spacing: 10; /* Espacio entre los elementos en VBox */
+    -fx-spacing: 10;
 }
 
 .hbox {
-    -fx-spacing: 20; /* Espacio entre los elementos en HBox */
+    -fx-spacing: 20;
 }
+
+

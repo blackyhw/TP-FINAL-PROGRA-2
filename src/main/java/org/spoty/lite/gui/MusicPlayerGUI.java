@@ -1,9 +1,12 @@
 package org.spoty.lite.gui;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
 import javafx.animation.SequentialTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -18,7 +21,14 @@ public class MusicPlayerGUI extends Application {
     private static MusicPlayerGUI instance;
     private StackPane mainContent;
     private BorderPane root;
-    private boolean isDarkTheme = true;
+    private Slider songSlider;
+    private Label songPositionLabel;
+    private Label totalDurationLabel;
+    private ToggleButton playPauseButton;
+    private Slider volumeSlider;
+    private Timeline timeline;
+    private ToggleButton likeButton;
+    private ToggleButton shuffleButton;
 
     public MusicPlayerGUI() {
         instance = this;
@@ -31,82 +41,58 @@ public class MusicPlayerGUI extends Application {
     @Override
     public void start(Stage stage) {
         stage.setTitle("SpotyLite 2.0");
-        stage.setWidth(700);
-        stage.setHeight(700);
+        stage.setWidth(800);
+        stage.setHeight(600);
         stage.setResizable(false);
 
         root = new BorderPane();
         root.getStyleClass().add("root");
 
-        // Header
         VBox header = createHeader();
         root.setTop(header);
 
-        // Main Content
         mainContent = createMainContent();
         root.setCenter(mainContent);
 
+
+        HBox playerControls = createPlayerControls();
+        root.setBottom(playerControls);
+
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/dark-theme.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/spotylite-style.css")).toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
 
     private VBox createHeader() {
+        VBox header = new VBox(20);
+        header.setPadding(new Insets(20));
+        header.setMinHeight(0);
+        header.setAlignment(Pos.CENTER);
 
-        Button toggleThemeButton = new Button();
-        updateThemeIcon(toggleThemeButton);
-        toggleThemeButton.setOnAction(e -> {
-            toggleTheme();
-            updateThemeIcon(toggleThemeButton);
-        });
+
+        TextField searchField = new TextField();
+        searchField.setPromptText("Buscar...");
+        searchField.getStyleClass().add("search-field");
+        searchField.setOnKeyReleased(e -> filterSongs(searchField.getText()));
 
         HBox nav = new HBox(20);
         nav.setAlignment(Pos.CENTER);
         nav.getChildren().addAll(
                 createNavLink("Inicio", "home"),
                 createNavLink("Playlists", "playlists"),
-                createNavLink("Mis Likes", "likes"),
+                createNavLink("Likes", "likes"),
                 createNavLink("Cuenta", "user"),
-                toggleThemeButton
+                searchField
         );
 
-        VBox header = new VBox();
-        header.setPadding(new Insets(10));
-        header.setAlignment(Pos.CENTER);
-
-        Label title = new Label();
-        title.getStyleClass().add("title");
-
-        header.getChildren().addAll(title, nav);
+        header.getChildren().addAll(nav);
         return header;
     }
 
-    private void updateThemeIcon(Button button) {
-        if (isDarkTheme) {
-            button.setText("🌙"); // Icon for dark theme
-            button.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-family: 'Segoe UI Symbol', 'Arial', sans-serif; -fx-font-size: 20px; -fx-border-color: transparent;");
-        } else {
-            button.setText("☀"); // Icon for light theme
-            button.setStyle("-fx-background-color: transparent; -fx-text-fill: black; -fx-font-family: 'Segoe UI Symbol', 'Arial', sans-serif; -fx-font-size: 20px; -fx-border-color: transparent;");
-        }
-    }
-
-    private void toggleTheme() {
-        isDarkTheme = !isDarkTheme;
-        Scene scene = mainContent.getScene();
-        scene.getStylesheets().clear();
-        String theme = isDarkTheme ? "/dark-theme.css" : "/light-theme.css";
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
-
-        root.getStyleClass().clear();
-        root.getStyleClass().add(isDarkTheme ? "root" : "root");
-    }
-
-
     private Button createNavLink(String text, String sectionId) {
         Button button = new Button(text);
-        button.getStyleClass().add("button");
+        button.getStyleClass().add("nav-button");
         button.setOnAction(e -> showSection(sectionId));
         return button;
     }
@@ -172,8 +158,8 @@ public class MusicPlayerGUI extends Application {
             transition.play();
         }
     }
+
     private void filterSongs(String query) {
-        // Lógica para filtrar canciones según la consulta
         System.out.println("Filtrar canciones por: " + query);
     }
 
@@ -182,12 +168,7 @@ public class MusicPlayerGUI extends Application {
         home.setAlignment(Pos.CENTER);
         home.setPadding(new Insets(20));
 
-        TextField searchField = new TextField();
-        searchField.setPromptText("Buscar Canciones...");
-        searchField.getStyleClass().add("text-field");
-        searchField.setOnKeyReleased(e -> filterSongs(searchField.getText()));
 
-        home.getChildren().add(searchField);
         home.getChildren().add(new Label("Bienvenido a SpotyLite"));
         home.getChildren().add(new Label("Tu música, tu estilo."));
         return home;
@@ -208,12 +189,7 @@ public class MusicPlayerGUI extends Application {
         VBox likes = new VBox(10);
         likes.setPadding(new Insets(20));
 
-        TextField searchField = new TextField();
-        searchField.setPromptText("Buscar Canciones Favoritas...");
-        searchField.getStyleClass().add("text-field");
-        searchField.setOnKeyReleased(e -> filterSongs(searchField.getText()));
 
-        likes.getChildren().add(searchField);
         likes.getChildren().add(new Label("Mis Likes"));
         likes.getChildren().addAll(new Label("Canción Favorita 1"), new Label("Canción Favorita 2"), new Label("Canción Favorita 3"));
         return likes;
@@ -235,15 +211,114 @@ public class MusicPlayerGUI extends Application {
         return user;
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    private HBox createPlayerControls() {
+        HBox playerControls = new HBox(10);
+        playerControls.setAlignment(Pos.CENTER);
+        playerControls.setPadding(new Insets(10));
+        playerControls.getStyleClass().add("player-controls");
+
+        VBox songInfo = new VBox(5);
+        songInfo.setAlignment(Pos.CENTER_LEFT);
+        Label songTitle = new Label("Título de la canción");
+        Label artistName = new Label("Nombre del artista");
+        songInfo.getChildren().addAll(songTitle, artistName);
+
+        HBox playbackControls = createPlaybackControls();
+
+        songSlider = new Slider(0, 100, 0);
+        songSlider.getStyleClass().add("song-slider");
+        songSlider.setPrefWidth(300);
+        songSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (songSlider.isValueChanging()) {
+                System.out.println("Seeking to: " + newValue.doubleValue());
+            }
+        });
+
+        songPositionLabel = new Label("0:00");
+        totalDurationLabel = new Label("0:00");
+
+        HBox timeLabels = new HBox();
+        timeLabels.setAlignment(Pos.CENTER);
+        timeLabels.getStyleClass().add("time-labels");
+        timeLabels.setSpacing(20);
+        HBox.setMargin(songPositionLabel, new Insets(0, 120, 0, 0));
+        HBox.setMargin(totalDurationLabel, new Insets(0, 0, 0, 120));
+
+        timeLabels.getChildren().addAll(songPositionLabel, totalDurationLabel);
+
+        volumeSlider = new Slider(0, 100, 50);
+        volumeSlider.setMin(0);
+        volumeSlider.setMax(100);
+        volumeSlider.setValue(100);
+        volumeSlider.setOrientation(Orientation.VERTICAL);
+        volumeSlider.getStyleClass().add("volume-slider");
+
+        VBox sliderBox = new VBox(5);
+        sliderBox.setAlignment(Pos.CENTER);
+        sliderBox.getChildren().addAll(songSlider, timeLabels);
+
+        playerControls.getChildren().addAll(songInfo, playbackControls, sliderBox, volumeSlider);
+        return playerControls;
     }
 
-    public void stopSliderUpdate() {
+    private HBox createPlaybackControls() {
+        HBox playbackControls = new HBox(10);
+        playbackControls.setAlignment(Pos.CENTER);
+
+        shuffleButton = new ToggleButton("🔀");
+        shuffleButton.getStyleClass().add("control-button");
+
+        Button prevButton = new Button("⏮");
+        prevButton.getStyleClass().add("control-button");
+
+        playPauseButton = new ToggleButton("▶");
+        playPauseButton.getStyleClass().add("control-button");
+        playPauseButton.setOnAction(event -> togglePlayPause());
+
+        Button nextButton = new Button("⏭");
+        nextButton.getStyleClass().add("control-button");
+
+        likeButton = new ToggleButton("♥");
+        likeButton.getStyleClass().add("control-button");
+
+        playbackControls.getChildren().addAll(shuffleButton, prevButton, playPauseButton, nextButton, likeButton);
+        return playbackControls;
+    }
+
+    private void togglePlayPause() {
+        if (playPauseButton.isSelected()) {
+            playPauseButton.setText("⏸");
+            startSliderUpdate();
+        } else {
+            playPauseButton.setText("▶");
+            stopSliderUpdate();
+        }
     }
 
     public void startSliderUpdate() {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            // Aquí iría la lógica para actualizar la posición del slider
+            double currentPosition = songSlider.getValue() + 1;
+            songSlider.setValue(currentPosition);
+            songPositionLabel.setText(formatTime(currentPosition));
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
+    public void stopSliderUpdate() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+    }
 
+    private String formatTime(double seconds) {
+        int minutes = (int) seconds / 60;
+        int secs = (int) seconds % 60;
+        return String.format("%d:%02d", minutes, secs);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
