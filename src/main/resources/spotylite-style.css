@@ -188,5 +188,8 @@ form button {
 .hbox {
     -fx-spacing: 20;
 }
+.error{
+    -fx-text-fill: red;
+}
 
 

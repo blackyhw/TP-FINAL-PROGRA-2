@@ -1,40 +1,13 @@
 package org.spoty.lite.model;
 
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.UnsupportedTagException;
-
-import java.io.IOException;
-
 public class Song {
-    private String title;
-    private String artist;
     private String filePath;
     private long duration;
+    private String artist;
+    private String title;
 
-    public Song(String title, String artist, String filePath) {
-        this.title = title;
-        this.artist = artist;
+    public Song(String filePath) {
         this.filePath = filePath;
-        this.duration = calculateDuration(filePath);
-    }
-
-    private long calculateDuration(String filePath) {
-        try {
-            Mp3File mp3File = new Mp3File(filePath);
-            return mp3File.getLengthInSeconds();
-        } catch (IOException | UnsupportedTagException | InvalidDataException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getArtist() {
-        return artist;
     }
 
     public String getFilePath() {
@@ -45,4 +18,25 @@ public class Song {
         return duration;
     }
 
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Song setTitle(String title) {
+        this.title = title;
+        return this;
+    }
 }

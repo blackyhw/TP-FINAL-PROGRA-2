@@ -29,7 +29,6 @@ public class LoginGUI extends Application {
         root.setPadding(new Insets(30));
         root.setAlignment(Pos.CENTER);
 
-        // Logo
         ImageView logo = loadImage("src/main/resources/logo.png");
         if (logo != null) {
             logo.setFitHeight(100);
@@ -38,22 +37,22 @@ public class LoginGUI extends Application {
             root.getChildren().add(logo);
         }
 
-        // Login fields
         userTextField = new TextField();
         userTextField.setPromptText("Usuario");
         passwordField = new PasswordField();
         passwordField.setPromptText("Contraseña");
 
-        // Login button
+
         Button loginBtn = new Button("INICIAR SESIÓN");
         loginBtn.setMaxWidth(Double.MAX_VALUE);
         loginBtn.setOnAction(e -> handleLogin());
+        passwordField.setOnAction(e -> handleLogin());
+        userTextField.setOnAction(e -> handleLogin());
 
-        // Register link
         Hyperlink registerLink = new Hyperlink("¿No tienes cuenta? Regístrate");
         registerLink.setOnAction(e -> handleRegister());
 
-        // Login message
+
         loginMessage = new Label();
         loginMessage.setId("loginMessage");
 
@@ -93,7 +92,6 @@ public class LoginGUI extends Application {
                 e.printStackTrace();
             }
             ((Stage) userTextField.getScene().getWindow()).close();
-            // Aquí iría el código para abrir la ventana principal de la aplicación
         } else {
             showMessage("Usuario o contraseña incorrectos", false);
         }
@@ -106,7 +104,7 @@ public class LoginGUI extends Application {
 
     private void showMessage(String message, boolean isSuccess) {
         loginMessage.setText(message);
-        loginMessage.getStyleClass().removeAll("success", "error");
+       loginMessage.getStyleClass().removeAll("error", "success");
         loginMessage.getStyleClass().add(isSuccess ? "success" : "error");
     }
 

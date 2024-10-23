@@ -14,6 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.spoty.lite.controller.MusicPlayerController;
+import org.spoty.lite.model.Song;
 
 import java.util.Objects;
 
@@ -29,6 +31,7 @@ public class MusicPlayerGUI extends Application {
     private Timeline timeline;
     private ToggleButton likeButton;
     private ToggleButton shuffleButton;
+    private MusicPlayerController controller;
 
     public MusicPlayerGUI() {
         instance = this;
@@ -62,6 +65,17 @@ public class MusicPlayerGUI extends Application {
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/spotylite-style.css")).toExternalForm());
         stage.setScene(scene);
         stage.show();
+
+        stage.setOnCloseRequest(e -> {
+            if (controller != null) {
+                controller.stop();
+            }
+        });
+
+        controller = new MusicPlayerController(songSlider, totalDurationLabel);
+        Song song = new Song("src/main/resources/test.mp3");
+        controller.initialize(song);
+        controller.onSongLoaded(song.getDuration());
     }
 
     private VBox createHeader() {
@@ -219,9 +233,10 @@ public class MusicPlayerGUI extends Application {
 
         VBox songInfo = new VBox(5);
         songInfo.setAlignment(Pos.CENTER_LEFT);
-        Label songTitle = new Label("Título de la canción");
-        Label artistName = new Label("Nombre del artista");
-        songInfo.getChildren().addAll(songTitle, artistName);
+        Label songTitleLabel = new Label("Canción");
+        Label artistNameLabel = new Label("Artista");
+
+        songInfo.getChildren().addAll(songTitleLabel, artistNameLabel);
 
         HBox playbackControls = createPlaybackControls();
 
@@ -287,9 +302,11 @@ public class MusicPlayerGUI extends Application {
 
     private void togglePlayPause() {
         if (playPauseButton.isSelected()) {
+            controller.play();
             playPauseButton.setText("⏸");
             startSliderUpdate();
         } else {
+            controller.pause();
             playPauseButton.setText("▶");
             stopSliderUpdate();
         }
