@@ -58,8 +58,8 @@
 
 .player-controls {
     -fx-background-color: #282828;
-    -fx-padding: 1px; /* Reduce el padding para disminuir la altura */
-    -fx-spacing: 1px; /* Reduce el spacing para disminuir la altura */
+    -fx-padding: 1px;
+    -fx-spacing: 1px;
     -fx-alignment: center;
 }
 
@@ -74,7 +74,7 @@
 .time-labels {
     -fx-text-fill: #B3B3B3;
     -fx-font-size: 12px;
-    -fx-spacing: 1px; /* Reduce el spacing para disminuir la altura */
+    -fx-spacing: 1px;
 }
 
 .control-button {
@@ -112,7 +112,6 @@
     -fx-text-fill: #1DB954;
 }
 
-/* Estilos adicionales */
 .playlist-container,
 .like-container {
     -fx-background-color: #282828;

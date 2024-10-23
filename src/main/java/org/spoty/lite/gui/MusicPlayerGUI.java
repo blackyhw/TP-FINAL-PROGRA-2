@@ -297,7 +297,6 @@ public class MusicPlayerGUI extends Application {
 
     public void startSliderUpdate() {
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            // Aquí iría la lógica para actualizar la posición del slider
             double currentPosition = songSlider.getValue() + 1;
             songSlider.setValue(currentPosition);
             songPositionLabel.setText(formatTime(currentPosition));
