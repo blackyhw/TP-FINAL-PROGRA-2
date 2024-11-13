@@ -1,10 +1,14 @@
 package org.spoty.lite.model;
 
 public class Song {
-    private String filePath;
-    private long duration;
-    private String artist;
+    private int song_id;
     private String title;
+    private String artist;
+    private String album;
+    private String genre;
+    private long duration;
+    private String filePath;
+    private int status;
 
     public Song(String filePath) {
         this.filePath = filePath;
@@ -30,7 +34,6 @@ public class Song {
         this.artist = artist;
     }
 
-
     public String getTitle() {
         return title;
     }
@@ -39,4 +42,6 @@ public class Song {
         this.title = title;
         return this;
     }
+
+
 }

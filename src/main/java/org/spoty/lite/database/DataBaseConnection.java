@@ -1,4 +1,4 @@
-package org.spoty.lite.db.access;
+package org.spoty.lite.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,4 +15,6 @@ public class DataBaseConnection {
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(db_url, dbe_user, db_password);
     }
+
+
 }

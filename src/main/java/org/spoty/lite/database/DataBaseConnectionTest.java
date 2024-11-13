@@ -1,4 +1,4 @@
-package org.spoty.lite.db.access;
+package org.spoty.lite.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
