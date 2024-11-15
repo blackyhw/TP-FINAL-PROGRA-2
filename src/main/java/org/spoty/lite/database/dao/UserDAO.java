@@ -6,8 +6,10 @@ import java.util.List;
 
 public interface UserDAO {
     void saveUser(User user);
-    void updateUser(User user);
-    void updateStatus(int userId, int status);
+    void updateUsername(User user, String username);
+    void updatePassword(User user, String password);
+    void updateEmail(User user, String email);
+    void userStatus(int userId, int status);
     User getUserById(int id);
     User getUserByUsername(String username);
     User getUserByEmail(String email);
