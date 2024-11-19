@@ -43,15 +43,12 @@ public class UserDAOImplementation implements UserDAO {
              preparedStatement.setString(1, user.getUsername());
              preparedStatement.setString(2, user.getPassword());
              preparedStatement.setString(3, user.getEmail());
-
             int rowsAffected = preparedStatement.executeUpdate();
-
                 if (rowsAffected > 0) {
                     System.out.println("Se insertó el usuario correctamente!");
                     ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
                     if (generatedKeys.next()) {
                         user.setUser_id(generatedKeys.getInt(1));
-
                         String query = "SELECT registration_date FROM users WHERE user_id = ?";
                         try (PreparedStatement preparedStatement2 = connection.prepareStatement(query)){
                             preparedStatement2.setInt(1, user.getUser_id());
@@ -71,13 +68,10 @@ public class UserDAOImplementation implements UserDAO {
     @Override
     public void updateUsername(User user,String username) {
         String sql = "UPDATE user SET username = ? WHERE user_id = ?";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setString(1, username);
             preparedStatement.setInt(2, user.getUser_id());
-
             int rowsAffected = preparedStatement.executeUpdate();
-
             if (rowsAffected > 0) {
                 System.out.println("Nombre de usuario actualizado correctamente!");
             } else {
@@ -93,13 +87,10 @@ public class UserDAOImplementation implements UserDAO {
     @Override
     public void updatePassword(User user, String password){
         String sql = "UPDATE user SET password = ? WHERE user_id = ?";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setString(1, password);
             preparedStatement.setInt(2, user.getUser_id());
-
             int rowsAffected = preparedStatement.executeUpdate();
-
             if (rowsAffected > 0) {
                 System.out.println("Contraseña de usuario actualizada correctamente!");
             } else {
@@ -119,9 +110,7 @@ public class UserDAOImplementation implements UserDAO {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, email);
             preparedStatement.setInt(2, user.getUser_id());
-
             int rowsAffected = preparedStatement.executeUpdate();
-
             if (rowsAffected > 0) {
                 System.out.println("Correo electrónico de usuario actualizado correctamente!");
             } else {
@@ -158,27 +147,17 @@ public class UserDAOImplementation implements UserDAO {
     @Override
     public User getUserById(int id) {
         String sql = "SELECT * FROM user WHERE user_id = ?";
-
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             if (resultSet.next()) {
-                User user = new User();
-                user.setUser_id(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(resultSet.getInt("status"));
-                user.setRegistration_date(resultSet.getTimestamp("registration_date"));
-
+                User user = getUser(resultSet);
                 return user;
             }
         } catch (SQLException e) {
             System.out.println("Error al obtener el usuario: " + e.getMessage());
             e.printStackTrace();
         }
-
         System.out.println("No se pudo encontrar un usuario con ese ID.");
         return null;
     }
@@ -186,27 +165,17 @@ public class UserDAOImplementation implements UserDAO {
     @Override
     public User getUserByUsername(String username) {
         String sql = "SELECT * FROM user WHERE username = ?";
-
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             if (resultSet.next()) {
-                User user = new User();
-                user.setUser_id(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(resultSet.getInt("status"));
-                user.setRegistration_date(resultSet.getTimestamp("registration_date"));
-
+                User user = getUser(resultSet);
                 return user;
             }
         } catch (SQLException e) {
             System.out.println("Error al obtener el usuario: " + e.getMessage());
             e.printStackTrace();
         }
-
         System.out.println("No se pudo encontrar un usuario con ese Username.");
         return null;
     }
@@ -214,20 +183,11 @@ public class UserDAOImplementation implements UserDAO {
     @Override
     public User getUserByEmail(String email) {
         String sql = "SELECT * FROM user WHERE email = ?";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             if (resultSet.next()) {
-                User user = new User();
-                user.setUser_id(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(resultSet.getInt("status"));
-                user.setRegistration_date(resultSet.getTimestamp("registration_date"));
-
+                User user = getUser(resultSet);
                 return user;
             }
         } catch (SQLException e) {
@@ -235,7 +195,6 @@ public class UserDAOImplementation implements UserDAO {
             e.printStackTrace();
 
         }
-
         System.out.println("No se pudo encontrar un usuario con ese Username.");
         return null;
     }
@@ -244,19 +203,10 @@ public class UserDAOImplementation implements UserDAO {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user ORDER BY username";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()) {
-                User user = new User();
-                user.setUser_id(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(resultSet.getInt("status"));
-                user.setRegistration_date(resultSet.getTimestamp("registration_date"));
-
+                User user = getUser(resultSet);
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -269,21 +219,12 @@ public class UserDAOImplementation implements UserDAO {
     @Override
     public List<User> getUsersByStatus(int status) {
         List<User> users = new ArrayList<>();
-
         String sql = "SELECT * FROM user WHERE status = ? ORDER BY username";
-
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setInt(1, status);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()) {
-                User user = new User();
-                user.setUser_id(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(resultSet.getInt("status"));
-                user.setRegistration_date(resultSet.getTimestamp("registration_date"));
+                User user = getUser(resultSet);
 
                 users.add(user);
             }
@@ -297,21 +238,12 @@ public class UserDAOImplementation implements UserDAO {
     @Override
     public List<User> getUsersByRegistrationDate(String registration_date) {
         List<User> users = new ArrayList<>();
-
         String sql = "SELECT * FROM user WHERE DATE (registration_date)  = ? ORDER BY username";
-
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setString(1, registration_date);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()) {
-                User user = new User();
-                user.setUser_id(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(resultSet.getInt("status"));
-                user.setRegistration_date(resultSet.getTimestamp("registration_date"));
+                User user = getUser(resultSet);
 
                 users.add(user);
             }
@@ -325,23 +257,13 @@ public class UserDAOImplementation implements UserDAO {
     @Override
     public List<User> getUsersByRegistrationMonth(int month, int year) {
         List<User> users = new ArrayList<>();
-
         String sql = "SELECT * FROM user WHERE MONTH (registration_date) = ? AND YEAR (registration_date) = ? ORDER BY username";
-
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setInt(1, month);
             preparedStatement.setInt(2, year);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()) {
-                User user = new User();
-                user.setUser_id(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(resultSet.getInt("status"));
-                user.setRegistration_date(resultSet.getTimestamp("registration_date"));
-
+                User user = getUser(resultSet);
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -354,22 +276,12 @@ public class UserDAOImplementation implements UserDAO {
     @Override
     public List<User> getUsersByRegistrationYear(int year) {
         List<User> users = new ArrayList<>();
-
         String sql = "SELECT * FROM user WHERE YEAR (registration_date) = ? ORDER BY username";
-
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setInt(1, year);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()) {
-                User user = new User();
-                user.setUser_id(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setStatus(resultSet.getInt("status"));
-                user.setRegistration_date(resultSet.getTimestamp("registration_date"));
-
+                User user = getUser(resultSet);
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -377,5 +289,16 @@ public class UserDAOImplementation implements UserDAO {
             e.printStackTrace();
         }
         return users;
+    }
+
+    private static User getUser(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setUser_id(resultSet.getInt("id"));
+        user.setUsername(resultSet.getString("username"));
+        user.setEmail(resultSet.getString("email"));
+        user.setPassword(resultSet.getString("password"));
+        user.setStatus(resultSet.getInt("status"));
+        user.setRegistration_date(resultSet.getTimestamp("registration_date"));
+        return user;
     }
 }

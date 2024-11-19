@@ -1,24 +1,25 @@
 package org.spoty.lite.database.dao.implementation;
 
 import org.spoty.lite.database.DataBaseConnection;
-import org.spoty.lite.database.dao.ModPlaylistDAO;
-import org.spoty.lite.model.ModPlaylist;
+import org.spoty.lite.database.dao.UserPlaylistDAO;
+import org.spoty.lite.model.UserPlaylist;
 import org.spoty.lite.model.Song;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModPlaylistDAOImplementation implements ModPlaylistDAO {
+public class UserPlaylistDAOImplementation implements UserPlaylistDAO {
     private Connection connection;
-    ModPlaylistxSongDAOImplementation modPlaylistxSongDAOImplementation;
+    private UserPlaylistxSongDAOImplementation userPlaylistxSongDAOImplementation;
 
-    public ModPlaylistDAOImplementation(Connection connection) {
+    public UserPlaylistDAOImplementation() {
         try {
             connection = DataBaseConnection.getConnection();
-            modPlaylistxSongDAOImplementation = new ModPlaylistxSongDAOImplementation();
+            userPlaylistxSongDAOImplementation = new UserPlaylistxSongDAOImplementation();
         } catch (SQLException e) {
             e.getMessage();
             e.printStackTrace();
@@ -37,11 +38,11 @@ public class ModPlaylistDAOImplementation implements ModPlaylistDAO {
     }
 
     @Override
-    public void createPlaylist(String title, int mod_id, String description) {
-        String sql = "INSERT INTO modplaylist (title, mod_id, description) VALUES (?, ?, ?)";
+    public void createPlaylist(String title, int user_id, String description) {
+        String sql = "INSERT INTO userplaylist (title, user_id, description) VALUES (?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, title);
-            preparedStatement.setInt(2, mod_id);
+            preparedStatement.setInt(2, user_id);
             preparedStatement.setString(3, description);
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows <= 0) {
@@ -54,20 +55,22 @@ public class ModPlaylistDAOImplementation implements ModPlaylistDAO {
     }
 
     @Override
-    public void addSongToPlaylist(int modlist_id, int song_id) {
+    public void addSongToPlaylist(int userPlaylist_id, int song_id) {
         try {
-            modPlaylistxSongDAOImplementation.addRelation(modlist_id, song_id);
-        } catch (Exception e) {
+            userPlaylistxSongDAOImplementation.addRelation(userPlaylist_id, song_id);
+            System.out.println("Canción añadida a la lista de reproducción.");
+        } catch (RuntimeException e) {
             e.printStackTrace();
             throw new RuntimeException("Error al añadir la canción a la lista de reproducción: " + e.getMessage());
         }
     }
 
     @Override
-    public void deleteSongFromPlaylist(int modlist_id, int song_id) {
+    public void deleteSongFromPlaylist(int userPlaylist_id, int song_id) {
         try {
-            modPlaylistxSongDAOImplementation.deleteRelation(modlist_id, song_id);
-        } catch (Exception e) {
+            userPlaylistxSongDAOImplementation.deleteRelation(userPlaylist_id, song_id);
+            System.out.println("Canción eliminada de la lista de reproducción.");
+        } catch (RuntimeException e) {
             e.printStackTrace();
             throw new RuntimeException("Error al eliminar la canción de la lista de reproducción: " + e.getMessage());
         }
@@ -75,7 +78,7 @@ public class ModPlaylistDAOImplementation implements ModPlaylistDAO {
 
     @Override
     public void updatePlaylist(String title, String description) {
-        String sql = "UPDATE modplaylist SET title = ?, description = ? WHERE modlist_id = ?";
+        String sql = "UPDATE userplaylist SET title = ?, description = ? WHERE userplaylist_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, title);
             preparedStatement.setString(2, description);
@@ -83,6 +86,7 @@ public class ModPlaylistDAOImplementation implements ModPlaylistDAO {
             if (affectedRows == 0) {
                 throw new SQLException("No se pudo actualizar la lista de reproducción.");
             }
+            System.out.println("Lista de reproducción actualizada.");
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Error al actualizar la lista de reproducción: " + e.getMessage());
@@ -90,10 +94,10 @@ public class ModPlaylistDAOImplementation implements ModPlaylistDAO {
     }
 
     @Override
-    public void enablePlaylist(int modlist_id) {
-        String sql = "UPDATE modplaylist SET status = 1 WHERE modlist_id = ?";
+    public void enablePlaylist(int userPlaylist_id) {
+        String sql = "UPDATE userplaylist SET status = 1 WHERE userplaylist_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, modlist_id);
+            preparedStatement.setInt(1, userPlaylist_id);
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("No se pudo habilitar la lista de reproducción.");
@@ -106,10 +110,10 @@ public class ModPlaylistDAOImplementation implements ModPlaylistDAO {
     }
 
     @Override
-    public void disablePlaylist(int modlist_id) {
-        String sql = "UPDATE modplaylist SET status = 0 WHERE modlist_id = ?";
+    public void disablePlaylist(int userPlaylist_id) {
+        String sql = "UPDATE userplaylist SET status = 0 WHERE userplaylist_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, modlist_id);
+            preparedStatement.setInt(1, userPlaylist_id);
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("No se pudo eliminar la lista de reproducción.");
@@ -122,10 +126,10 @@ public class ModPlaylistDAOImplementation implements ModPlaylistDAO {
     }
 
     @Override
-    public List<Song> getPlaylistById(int modlist_id) {
-        List<Integer> songsIds = modPlaylistxSongDAOImplementation.getRelations(modlist_id);
+    public List<Song> getPlaylistById(int userPlaylist_id) {
+        List<Integer> songIds = userPlaylistxSongDAOImplementation.getRelations(userPlaylist_id);
         List<Song> songs = new ArrayList<>();
-        for (int songId : songsIds) {
+        for (int songId : songIds) {
             Song song = new SongDAOImplementation().getSongById(songId);
             songs.add(song);
         }
@@ -133,63 +137,63 @@ public class ModPlaylistDAOImplementation implements ModPlaylistDAO {
     }
 
     @Override
-    public List<ModPlaylist> getPlaylistsByMod(int mod_id) {
-        List<ModPlaylist> modPlaylists = new ArrayList<>();
-        String sql = "SELECT * FROM modplaylist WHERE mod_id = ? AND status = 1";
+    public List<UserPlaylist> getPlaylistsByUser(int user_id) {
+        List<UserPlaylist> playlists = new ArrayList<>();
+        String sql = "SELECT * FROM userplaylist WHERE user_id = ? AND status = 1";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, mod_id);
-            preparedStatement.executeQuery();
-            while (preparedStatement.getResultSet().next()) {
-                ModPlaylist modPlaylist = new ModPlaylist();
-                modPlaylist.setModlist_id(preparedStatement.getResultSet().getInt("modlist_id"));
-                modPlaylist.setMod_id(preparedStatement.getResultSet().getInt("mod_id"));
-                modPlaylist.setTitle(preparedStatement.getResultSet().getString("title"));
-                modPlaylist.setDescription(preparedStatement.getResultSet().getString("description"));
-                modPlaylist.setStatus(preparedStatement.getResultSet().getInt("status"));
-                modPlaylist.setCreation_date(preparedStatement.getResultSet().getTimestamp("creation_date"));
-                modPlaylists.add(modPlaylist);
+            preparedStatement.setInt(1, user_id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                UserPlaylist playlist = new UserPlaylist();
+                playlist.setUserplaylist_id(resultSet.getInt("userplaylist_id"));
+                playlist.setUser_id(resultSet.getInt("user_id"));
+                playlist.setTitle(resultSet.getString("title"));
+                playlist.setDescription(resultSet.getString("description"));
+                playlist.setStatus(resultSet.getInt("status"));
+                playlist.setCreation_date(resultSet.getTimestamp("creation_date"));
+                playlists.add(playlist);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error al obtener las listas de reproducción del moderador: " + e.getMessage());
+            throw new RuntimeException("Error al obtener las listas de reproducción del usuario: " + e.getMessage());
         }
-        return modPlaylists;
-    }
-
-    public List<ModPlaylist> getDisabledPlaylistsByMod(int mod_id) {
-        List<ModPlaylist> disabledModPlaylists = new ArrayList<>();
-        String sql = "SELECT * FROM modplaylist WHERE mod_id = ? AND status = 0";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, mod_id);
-            preparedStatement.executeQuery();
-            while (preparedStatement.getResultSet().next()) {
-                ModPlaylist modPlaylist = new ModPlaylist();
-                modPlaylist.setModlist_id(preparedStatement.getResultSet().getInt("modlist_id"));
-                modPlaylist.setMod_id(preparedStatement.getResultSet().getInt("mod_id"));
-                modPlaylist.setTitle(preparedStatement.getResultSet().getString("title"));
-                modPlaylist.setDescription(preparedStatement.getResultSet().getString("description"));
-                modPlaylist.setStatus(preparedStatement.getResultSet().getInt("status"));
-                modPlaylist.setCreation_date(preparedStatement.getResultSet().getTimestamp("creation_date"));
-                disabledModPlaylists.add(modPlaylist);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error al obtener las listas de reproducción del moderador: " + e.getMessage());
-        }
-        return disabledModPlaylists;
+        return playlists;
     }
 
     @Override
-    public boolean doesPlaylistExist(int modlist_id) {
-        String sql = "SELECT 1 FROM modplaylist WHERE modlist_id = ?";
+    public List<UserPlaylist> getDisabledPlaylistsByUser(int user_id) {
+        List<UserPlaylist> disabledPlaylists = new ArrayList<>();
+        String sql = "SELECT * FROM userplaylist WHERE user_id = ? AND status = 0";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, modlist_id);
-            preparedStatement.executeQuery();
-            return preparedStatement.getResultSet().next();
+            preparedStatement.setInt(1, user_id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                UserPlaylist playlist = new UserPlaylist();
+                playlist.setUserplaylist_id(resultSet.getInt("userplaylist_id"));
+                playlist.setUser_id(resultSet.getInt("user_id"));
+                playlist.setTitle(resultSet.getString("title"));
+                playlist.setDescription(resultSet.getString("description"));
+                playlist.setStatus(resultSet.getInt("status"));
+                playlist.setCreation_date(resultSet.getTimestamp("creation_date"));
+                disabledPlaylists.add(playlist);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al obtener las listas de reproducción del usuario: " + e.getMessage());
+        }
+        return disabledPlaylists;
+    }
+
+    @Override
+    public boolean doesPlaylistExist(int userPlaylist_id) {
+        String sql = "SELECT 1 FROM userplaylist WHERE userplaylist_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, userPlaylist_id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Error al obtener la playlist: " + e.getMessage());
         }
     }
 }
-

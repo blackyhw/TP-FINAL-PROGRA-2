@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SongDAOImplementation implements SongDAO {
-
     private Connection connection;
 
     public SongDAOImplementation() {
@@ -34,18 +33,6 @@ public class SongDAOImplementation implements SongDAO {
         }
     }
 
-    private Song resultSetToSong(ResultSet resultSet) throws SQLException {
-        Song song = new Song();
-        song.setSong_id(resultSet.getInt("song_id"));
-        song.setTitle(resultSet.getString("title"));
-        song.setArtist(resultSet.getString("artist"));
-        song.setAlbum(resultSet.getString("album"));
-        song.setGenre(resultSet.getString("genre"));
-        song.setStatus(resultSet.getInt("status"));
-        song.setFilePath(resultSet.getString("file_path"));
-        return song;
-    }
-
     @Override
     public Song getSongById(int song_id) {
         String sql = "SELECT * FROM song WHERE song_id = ?";
@@ -53,7 +40,7 @@ public class SongDAOImplementation implements SongDAO {
             preparedStatement.setInt(1, song_id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                return resultSetToSong(resultSet);
+                return setSong(resultSet);
             }
         } catch (SQLException e) {
             System.out.println("Error al obtener la canción: " + e.getMessage());
@@ -69,7 +56,6 @@ public class SongDAOImplementation implements SongDAO {
             preparedStatement.setInt(1, status);
             preparedStatement.setInt(2, song_id);
             int rowsAffected = preparedStatement.executeUpdate();
-
             if(rowsAffected > 0){
                 System.out.println("Estatus de la canción actualizado correctamente!");
             }
@@ -85,9 +71,8 @@ public class SongDAOImplementation implements SongDAO {
         String sql = "SELECT * FROM song ORDER BY title";
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while(resultSet.next()){
-                Song song = resultSetToSong(resultSet);
+                Song song = setSong(resultSet);
                 songs.add(song);
             }
         } catch (SQLException e) {
@@ -104,9 +89,8 @@ public class SongDAOImplementation implements SongDAO {
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, genre);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             while(resultSet.next()){
-                Song song = resultSetToSong(resultSet);
+                Song song = setSong(resultSet);
                 songs.add(song);
             }
         } catch (SQLException e) {
@@ -124,7 +108,7 @@ public class SongDAOImplementation implements SongDAO {
             preparedStatement.setString(1, artist);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                Song song = resultSetToSong(resultSet);
+                Song song = setSong(resultSet);
                 songs.add(song);
             }
         } catch (SQLException e) {
@@ -142,7 +126,7 @@ public class SongDAOImplementation implements SongDAO {
             preparedStatement.setString(1, album);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                Song song = resultSetToSong(resultSet);
+                Song song = setSong(resultSet);
                 songs.add(song);
             }
         } catch (SQLException e) {
@@ -160,7 +144,7 @@ public class SongDAOImplementation implements SongDAO {
             preparedStatement.setString(1, title);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                Song song = resultSetToSong(resultSet);
+                Song song = setSong(resultSet);
                 songs.add(song);
             }
         } catch (SQLException e) {
@@ -178,7 +162,7 @@ public class SongDAOImplementation implements SongDAO {
             preparedStatement.setInt(1, status);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
-                Song song = resultSetToSong(resultSet);
+                Song song = setSong(resultSet);
                 songs.add(song);
             }
         } catch (SQLException e) {
@@ -186,5 +170,17 @@ public class SongDAOImplementation implements SongDAO {
             e.printStackTrace();
         }
         return songs;
+    }
+
+    private Song setSong(ResultSet resultSet) throws SQLException {
+        Song song = new Song();
+        song.setSong_id(resultSet.getInt("song_id"));
+        song.setTitle(resultSet.getString("title"));
+        song.setArtist(resultSet.getString("artist"));
+        song.setAlbum(resultSet.getString("album"));
+        song.setGenre(resultSet.getString("genre"));
+        song.setStatus(resultSet.getInt("status"));
+        song.setFilePath(resultSet.getString("file_path"));
+        return song;
     }
 }
