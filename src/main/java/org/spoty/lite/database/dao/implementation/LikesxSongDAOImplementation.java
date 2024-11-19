@@ -93,6 +93,7 @@ public class LikesxSongDAOImplementation implements RelationDAO {
         }
     }
 
+    @Override
     public boolean doesPlaylistExist(int list_id) {
         String sql = "SELECT 1 FROM playlist WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {

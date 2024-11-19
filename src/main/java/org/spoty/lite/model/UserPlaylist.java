@@ -2,31 +2,31 @@ package org.spoty.lite.model;
 
 import java.sql.Timestamp;
 
-public class ModPlaylist {
-    private int modlist_id;
-    private int mod_id;
+public class UserPlaylist {
+    private int userplaylist_id;
+    private int user_id;
     private String title;
     private String description;
     private int status;
     private Timestamp creation_date;
 
-    public ModPlaylist() {
+    public UserPlaylist() {
     }
 
-    public int getModlist_id() {
-        return modlist_id;
+    public int getUserplaylist_id() {
+        return userplaylist_id;
     }
 
-    public void setModlist_id(int modlist_id) {
-        this.modlist_id = modlist_id;
+    public void setUserplaylist_id(int userplaylist_id) {
+        this.userplaylist_id = userplaylist_id;
     }
 
-    public int getMod_id() {
-        return mod_id;
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setMod_id(int mod_id) {
-        this.mod_id = mod_id;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public String getTitle() {
@@ -60,4 +60,6 @@ public class ModPlaylist {
     public void setCreation_date(Timestamp creation_date) {
         this.creation_date = creation_date;
     }
+
+
 }

@@ -2,10 +2,10 @@ package org.spoty.lite.service;
 
 import org.spoty.lite.database.dao.RelationDAO;
 
-public class PlaylistxSongService {
+public class UserPlaylistxSongService {
     private RelationDAO relationDAO;
     
-    public PlaylistxSongService(RelationDAO relationDAO) {
+    public UserPlaylistxSongService(RelationDAO relationDAO) {
         this.relationDAO = relationDAO;
     }
     

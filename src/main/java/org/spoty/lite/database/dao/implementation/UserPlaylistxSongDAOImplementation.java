@@ -10,10 +10,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaylistxSongDAOImplementation implements RelationDAO {
+public class UserPlaylistxSongDAOImplementation implements RelationDAO {
     private Connection connection;
 
-    public PlaylistxSongDAOImplementation() {
+    public UserPlaylistxSongDAOImplementation() {
         try {
             connection = DataBaseConnection.getConnection();
         } catch (SQLException e) {
@@ -34,10 +34,10 @@ public class PlaylistxSongDAOImplementation implements RelationDAO {
     }
 
     @Override
-    public int addRelation(int list_id, int song_id) {
-        String sql = "INSERT INTO playlistxsong (list_id, song_id) VALUES (?, ?)";
+    public int addRelation(int userplaylist_id, int song_id) {
+        String sql = "INSERT INTO userplaylistxsong (list_id, song_id) VALUES (?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, list_id);
+            preparedStatement.setInt(1, userplaylist_id);
             preparedStatement.setInt(2, song_id);
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
@@ -47,7 +47,7 @@ public class PlaylistxSongDAOImplementation implements RelationDAO {
                 if (generatedKeys.next()) {
                     return generatedKeys.getInt(1);
                 } else {
-                    throw new SQLException("No se pudo obtener el ID generado de la canción.");
+                    throw new SQLException("No se pudo obtener el ID generado de la relación.");
                 }
             }
         } catch (SQLException e) {
@@ -57,10 +57,10 @@ public class PlaylistxSongDAOImplementation implements RelationDAO {
     }
 
     @Override
-    public void deleteRelation(int list_id, int song_id) {
-        String sql = "UPDATE playlistxsong SET status = 0 WHERE list_id = ? AND song_id = ?";
+    public void deleteRelation(int userplaylist_id, int song_id) {
+        String sql = "UPDATE userplaylistxsong SET status = 0 WHERE userplaylist_id = ? AND song_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, list_id);
+            preparedStatement.setInt(1, userplaylist_id);
             preparedStatement.setInt(2, song_id);
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
@@ -73,14 +73,15 @@ public class PlaylistxSongDAOImplementation implements RelationDAO {
         }
     }
 
-    public List<Integer>getRelations(int list_id) {
-        if (!doesPlaylistExist(list_id)) {
-            throw new IllegalArgumentException("La playlist con ID " + list_id + " no existe.");
+    @Override
+    public List<Integer>getRelations(int userplaylist_id) {
+        if (!doesPlaylistExist(userplaylist_id)) {
+            throw new IllegalArgumentException("La playlist con ID " + userplaylist_id + " no existe.");
         }
         List<Integer> songsInPlaylist = new ArrayList<>();
-        String sql = "SELECT song_id FROM playlistxsong WHERE list_id = ? AND status = 1";
+        String sql = "SELECT song_id FROM userplaylistxsong WHERE userplaylist_id = ? AND status = 1";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, list_id);
+            preparedStatement.setInt(1, userplaylist_id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 songsInPlaylist.add(resultSet.getInt("song_id"));
@@ -92,10 +93,11 @@ public class PlaylistxSongDAOImplementation implements RelationDAO {
         }
     }
 
-    public boolean doesPlaylistExist(int list_id) {
+    @Override
+    public boolean doesPlaylistExist(int userplaylist_id) {
         String sql = "SELECT 1 FROM playlist WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, list_id);
+            preparedStatement.setInt(1, userplaylist_id);
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
         } catch (SQLException e) {
@@ -103,5 +105,4 @@ public class PlaylistxSongDAOImplementation implements RelationDAO {
             throw new RuntimeException("Error al obtener la playlist. " + e.getMessage());
         }
     }
-
 }
